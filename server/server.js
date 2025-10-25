@@ -3,7 +3,7 @@ import express from "express";
 import ConnectDB from "./config/config.js";
 import dotenv from "dotenv";
 import cors from "cors";
-
+import userRoutes from "./routes/UserRoutes.js";
 
 
 
@@ -16,6 +16,8 @@ app.use(cors());
 dotenv.config();
 
 app.get("/",(req,res)=>{res.send("Hellow world")});
+
+app.use("/api/users/",userRoutes)
 
 app.listen(5000,(req,res)=>{
     // res.send("Hellow world");
