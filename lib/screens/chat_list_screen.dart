@@ -39,7 +39,7 @@ class ChatListScreen extends StatelessWidget {
           return ListTile(
             leading: CircleAvatar(
               radius: 25,
-              backgroundColor: Colors.blueAccent,
+              backgroundColor: Colors.cyan,
               child: Text(
                 chat['name']![0],
                 style: TextStyle(color: Colors.white),
@@ -69,8 +69,8 @@ class ChatListScreen extends StatelessWidget {
         onPressed: () {
           // Action for new chat
         },
-        backgroundColor: Colors.blueAccent,
-        child: Icon(Icons.add),
+        backgroundColor: Colors.cyan,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

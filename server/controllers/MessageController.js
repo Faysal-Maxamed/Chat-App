@@ -1,6 +1,7 @@
 import MessageModel from "../models/MessgeSchema.js";
-import { io } from "../socket.js";  
 
+
+import { io } from "../socket.js";  
 
 export const sendMessage = async (req, res) => {
   try {
