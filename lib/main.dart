@@ -1,5 +1,5 @@
+import 'package:chat_app/login/login_page.dart';
 import 'package:flutter/material.dart';
-import 'screens/chat_list_screen.dart';
 
 void main() {
   runApp(ChatApp());
@@ -14,7 +14,7 @@ class ChatApp extends StatelessWidget {
         primaryColor: Colors.blueAccent,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: ChatListScreen(),
+      home: LoginPage(),
     );
   }
 }
