@@ -1,0 +1,1 @@
+const String Endpoint = 'http://172.20.10.8:4000/api/';
