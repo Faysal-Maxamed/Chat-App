@@ -9,6 +9,8 @@ import messageRoutes from "./routes/MessageRoutes.js";
 
 
 const app= express();
+const port=4000;
+const host = "172.20.10.8";
 
 app.use(express.json());
 app.use(cors());
@@ -21,7 +23,4 @@ app.get("/",(req,res)=>{res.send("Hellow world")});
 app.use("/api/users/",userRoutes)
 app.use("/api/messages/",messageRoutes)
 
-app.listen(5000,(req,res)=>{
-    // res.send("Hellow world");
-    console.log("Server is running on port 5000");
-})
+app.listen(port,host,()=>console.log(`server is running port on ${host}`));
