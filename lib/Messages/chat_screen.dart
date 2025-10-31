@@ -1,4 +1,5 @@
 import 'package:chat_app/Messages/chat_provider.dart';
+import 'package:chat_app/Messages/send_message.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,16 +51,14 @@ class ChatScreen extends StatelessWidget {
                   subtitle: Text(lastMessage),
                   trailing: Text(formattedTime),
                   onTap: () {
-                    // chatProvider.getReceiverId(user['_id'] ?? '');
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (_) => ChatDetailScreen(
-                    //       receiverId: user['_id'] ?? '',
-                    //       receiverName: email,
-                    //     ),
-                    //   ),
-                    // );
+                    chatProvider.getReceiverId(user['_id'] ?? '');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SendMessage(
+                        ),
+                      ),
+                    );
                   },
                 );
               },
