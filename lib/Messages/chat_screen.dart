@@ -1,4 +1,5 @@
 import 'package:chat_app/Messages/chat_provider.dart';
+import 'package:chat_app/Messages/search_page.dart';
 import 'package:chat_app/Messages/send_message.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,8 @@ class ChatScreen extends StatelessWidget {
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Chat Screen")),
+      appBar: AppBar(title: const Text("Chat Screen"),
+      actions: [IconButton(onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>SearchPage())), icon: Icon(Icons.search))],),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: chatProvider.getChatList(),
         builder: (context, snapshot) {
