@@ -58,7 +58,9 @@ class ChatProvider extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> getChatList() async {
     try {
-      final token = box.read(Token);
+      final token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDM4ZjlmNDQ5ZjZlYTQzMWExZWM1MiIsImlhdCI6MTc2MTkyMDk4MCwiZXhwIjoxNzY0NTEyOTgwfQ.cKs8-_Km21yw70QS7SsLi7bnYkYJVltnt3EpM-8ICuk";
+      final hasdate = box.hasData(token);
+      print(hasdate);
       final response = await http.get(
         Uri.parse('$Endpoint/messages/chats/list'),
         headers: {

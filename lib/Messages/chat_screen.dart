@@ -26,31 +26,39 @@ class ChatScreen extends StatelessWidget {
               itemCount: chatList.length,
               itemBuilder: (context, index) {
                 final chat = chatList[index];
-                final user = chat['user'];
-                final lastMessage = chat['lastMessage'];
-                final time = chat['time'];
+                final user = chat['user'] ?? {};
+
+                final lastMessage = chat['lastMessage'] ?? '';
+                final timeStr = chat['time'] ?? '';
+                final phoneNumber = user['phoneNumber'] ?? 'U';
+                final email = user['email'] ?? 'Unknown';
+
+                String formattedTime = '';
+                if (timeStr.isNotEmpty) {
+                  try {
+                    final dt = DateTime.parse(timeStr).toLocal();
+                    formattedTime =
+                        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+                  } catch (_) {
+                    formattedTime = '';
+                  }
+                }
 
                 return ListTile(
                   leading: CircleAvatar(
-                    child: Text(user['phoneNumber']?.substring(0, 2) ?? 'U'),
+                    child: Text(phoneNumber.substring(0, 2)),
                   ),
-                  title: Text(user['email'] ?? 'Unknown'),
-                  subtitle: Text(lastMessage ?? ''),
-                  trailing: Text(
-                    time != null
-                        ? DateTime.parse(time).toLocal().hour.toString() +
-                            ":" +
-                            DateTime.parse(time).toLocal().minute.toString()
-                        : '',
-                  ),
+                  title: Text(email),
+                  subtitle: Text(lastMessage),
+                  trailing: Text(formattedTime),
                   onTap: () {
-                    // chatProvider.getReceiverId(user['_id']);
+                    // chatProvider.getReceiverId(user['_id'] ?? '');
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(
                     //     builder: (_) => ChatDetailScreen(
-                    //       receiverId: user['_id'],
-                    //       receiverName: user['email'] ?? 'User',
+                    //       receiverId: user['_id'] ?? '',
+                    //       receiverName: email,
                     //     ),
                     //   ),
                     // );
