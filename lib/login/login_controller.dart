@@ -26,9 +26,12 @@ class LoginController extends ChangeNotifier {
     try {
       var data = {"phoneNumber": phoneNumber, "password": password};
       var response = await http.post(
-        Uri.parse(Endpoint+"users/login"),
+        Uri.parse(Endpoint + "users/login"),
         body: jsonEncode(data),
       );
+
+      print("Response status: ${response.statusCode}");
+      print("Response body: ${data}");
       if (response.statusCode == 200) {
         print("succsesfully logged in");
         Navigator.push(

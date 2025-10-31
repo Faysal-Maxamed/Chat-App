@@ -1,8 +1,10 @@
+import 'package:chat_app/login/login_controller.dart';
 import 'package:chat_app/login/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChatApp());
+  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (_)=>LoginController())], child: ChatApp()));
 }
 
 class ChatApp extends StatelessWidget {

@@ -27,7 +27,7 @@ class LoginPage extends StatelessWidget {
                   child: Column(
                     children: [
                       TextFormField(
-                        
+                        onChanged: (value) => login.getPhoneNumber(value),
                         decoration: InputDecoration(
                           hintText: "Enter Phone number",
                           border: OutlineInputBorder(
@@ -38,6 +38,7 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 15),
                       TextFormField(
                         obscureText: true,
+                        onChanged: (value) => login.getPassword(value),
                         decoration: InputDecoration(
                           hintText: "Enter Password",
                           border: OutlineInputBorder(
@@ -72,9 +73,7 @@ class LoginPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () {
-                                // Call login function from LoginController
-                              },
+                              onPressed: ()=> loginController.login(context),
                               child: const Text("Login"),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
