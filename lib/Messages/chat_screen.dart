@@ -45,10 +45,8 @@ class ChatScreen extends StatelessWidget {
                 }
 
                 return ListTile(
-                  leading: CircleAvatar(
-                    child: Text(phoneNumber.substring(0, 2)),
-                  ),
-                  title: Text(email),
+                  leading: CircleAvatar(child: Text(email.substring(0, 2))),
+                  title: Text(phoneNumber),
                   subtitle: Text(lastMessage),
                   trailing: Text(formattedTime),
                   onTap: () {
