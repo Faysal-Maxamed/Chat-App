@@ -1,20 +1,16 @@
-import 'package:chat_app/Register/register.dart';
+import 'package:chat_app/Register/register_controller.dart';
 import 'package:chat_app/login/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final loginController = Provider.of<LoginController>(
-      context,
-      listen: false,
-    );
 
-    return Consumer<LoginController>(
-      builder: (context, login, child) {
+    return Consumer<RegisterController>(
+      builder: (context, register, child) {
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -30,7 +26,7 @@ class LoginPage extends StatelessWidget {
                   child: Column(
                     children: [
                       TextFormField(
-                        onChanged: (value) => login.getPhoneNumber(value),
+                        onChanged: (value) => register.getPhoneNumber(value),
                         decoration: InputDecoration(
                           hintText: "Enter Phone number",
                           border: OutlineInputBorder(
@@ -39,9 +35,19 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 15),
+                       TextFormField(
+                        onChanged: (value) => register.getEmail(value),
+                        decoration: InputDecoration(
+                          hintText: "Enter Email",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
                       TextFormField(
                         obscureText: true,
-                        onChanged: (value) => login.getPassword(value),
+                        onChanged: (value) => register.getPassword(value),
                         decoration: InputDecoration(
                           hintText: "Enter Password",
                           border: OutlineInputBorder(
@@ -60,19 +66,13 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 45),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: const [
                           Text("I don't have any account!"),
-                          TextButton(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => RegisterPage()),
-                            ),
-                            child: Text(
-                              "Register",
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            "Register",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -82,7 +82,7 @@ class LoginPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () => login.login(context),
+                              onPressed: () => register.register(context),
                               child: const Text("Login"),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
