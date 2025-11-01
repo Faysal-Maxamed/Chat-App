@@ -35,7 +35,7 @@ class LoginController extends ChangeNotifier {
     try {
       var data = {"phoneNumber": phoneNumber, "password": password};
       var response = await http.post(
-        Uri.parse(Endpoint + "users/login"),
+        Uri.parse(Endpoint + "/users/login"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(data),
       );
@@ -46,7 +46,7 @@ class LoginController extends ChangeNotifier {
         print("succsesfully logged in");
         var decodedate = jsonDecode(response.body);
         var user = LoginModel.fromJson(decodedate);
-       
+
         print(user.token);
         saveUser(user);
         SnackBar(content: Text("Succsess"));
@@ -64,7 +64,8 @@ class LoginController extends ChangeNotifier {
   saveUser(LoginModel login) {
     box.write(userInfo, login.toJson());
     box.write(isLoggedIn, "isLoggedIn");
-     box.write(Token, user?.token);
+    box.write(Token, login.token);
+    print("💾 Token saved to GetStorage: ${login.token}");
   }
 
   getuser() {

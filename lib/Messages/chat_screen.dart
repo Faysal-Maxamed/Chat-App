@@ -57,8 +57,7 @@ class ChatScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => SendMessage(
-                        ),
+                        builder: (_) => SendMessage(receiverId: user['_id'] ?? '')
                       ),
                     );
                   },

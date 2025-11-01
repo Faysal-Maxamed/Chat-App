@@ -58,8 +58,7 @@ class ChatProvider extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> getChatList() async {
     try {
-      final token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDM4ZjlmNDQ5ZjZlYTQzMWExZWM1MiIsImlhdCI6MTc2MTkyMDk4MCwiZXhwIjoxNzY0NTEyOTgwfQ.cKs8-_Km21yw70QS7SsLi7bnYkYJVltnt3EpM-8ICuk";
+      final token =box.read(Token);
       final hasdate = box.hasData(token);
       print(hasdate);
       final response = await http.get(
@@ -85,25 +84,29 @@ class ChatProvider extends ChangeNotifier {
   }
 
   /// ✅ Send a new message
-  Future<void> sendMessage() async {
+  Future<void> sendMessage(ReceiverID) async {
     try {
       final token = box.read(Token);
 
       print(Token);
       final response = await http.post(
-        Uri.parse('$Endpoint/messages'),
+        Uri.parse('$Endpoint/messages/send'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'receiverId': receiverId, 'content': content}),
+        body: jsonEncode({'receiverId': ReceiverID, 'content': content}),
       );
 
+      print(response.body);
+      print(ReceiverID);
+     
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         _messages.add(
           data['data'],
         ); // ✅ sax: backend wuxuu soo diraa data: message
+         print("success");
         notifyListeners();
       } else {
         debugPrint('❌ Failed to send message: ${response.body}');
