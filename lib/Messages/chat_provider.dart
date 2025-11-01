@@ -100,13 +100,12 @@ class ChatProvider extends ChangeNotifier {
 
       print(response.body);
       print(ReceiverID);
-     
+      print("success");
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         _messages.add(
           data['data'],
         ); // ✅ sax: backend wuxuu soo diraa data: message
-         print("success");
         notifyListeners();
       } else {
         debugPrint('❌ Failed to send message: ${response.body}');

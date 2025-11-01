@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 class SendMessage extends StatefulWidget {
   final String? receiverId;
-  const SendMessage({super.key,required this.receiverId});
+  const SendMessage({super.key, required this.receiverId});
 
   @override
   State<SendMessage> createState() => _SendMessageState();
@@ -12,6 +12,15 @@ class SendMessage extends StatefulWidget {
 
 class _SendMessageState extends State<SendMessage> {
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+      chatProvider.getMessages(widget.receiverId!);
+    });
+  }
+
   Widget build(BuildContext context) {
     return Consumer<ChatProvider>(
       builder: (context, chatprovider, _) {
@@ -24,14 +33,33 @@ class _SendMessageState extends State<SendMessage> {
             children: [
               // Message list
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: 8,
-                  itemBuilder: (context, index) {
-                    return Text("Messages will appear here");
-                  },
-                ),
+                child: chatprovider.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(10),
+                        itemCount: chatprovider.messages.length,
+                        itemBuilder: (context, index) {
+                          final msg = chatprovider.messages[index];
+                          return Align(
+                            alignment: msg['isMine'] == true
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 4),
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: msg['isMine'] == true
+                                    ? Colors.blue[100]
+                                    : Colors.grey[300],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(msg['text'] ?? ''),
+                            ),
+                          );
+                        },
+                      ),
               ),
+
               // Input field
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -43,7 +71,8 @@ class _SendMessageState extends State<SendMessage> {
                         onChanged: (value) => chatprovider.getContent(value),
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
-                            onPressed: () => chatprovider.sendMessage(widget.receiverId),
+                            onPressed: () =>
+                                chatprovider.sendMessage(widget.receiverId),
                             icon: Icon(Icons.send, color: Colors.blue),
                           ),
                           hintText: 'Type your message...',
