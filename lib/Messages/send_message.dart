@@ -1,4 +1,5 @@
 import 'package:chat_app/Messages/chat_provider.dart';
+import 'package:chat_app/login/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,11 +23,11 @@ class _SendMessageState extends State<SendMessage> {
   }
 
   Widget build(BuildContext context) {
-    return Consumer<ChatProvider>(
-      builder: (context, chatprovider, _) {
+    return Consumer2<ChatProvider, LoginController>(
+      builder: (context, chatprovider, login, _) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Chat'),
+            title: Text(login.user!.phoneNumber ?? 'unkown'),
             backgroundColor: Colors.blue,
           ),
           body: Column(
