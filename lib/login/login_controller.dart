@@ -46,7 +46,7 @@ class LoginController extends ChangeNotifier {
         print("succsesfully logged in");
         var decodedate = jsonDecode(response.body);
         var user = LoginModel.fromJson(decodedate);
-        box.write(Token, user.token);
+       
         print(user.token);
         saveUser(user);
         SnackBar(content: Text("Succsess"));
@@ -64,6 +64,7 @@ class LoginController extends ChangeNotifier {
   saveUser(LoginModel login) {
     box.write(userInfo, login.toJson());
     box.write(isLoggedIn, "isLoggedIn");
+     box.write(Token, user?.token);
   }
 
   getuser() {
