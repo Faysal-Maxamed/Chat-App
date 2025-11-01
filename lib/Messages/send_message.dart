@@ -27,7 +27,7 @@ class _SendMessageState extends State<SendMessage> {
       builder: (context, chatprovider, login, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(login.user!.phoneNumber ?? 'unkown'),
+            title: Text(login.user!.phoneNumber ?? 'unkownw'),
             backgroundColor: Colors.blue,
           ),
           body: Column(
