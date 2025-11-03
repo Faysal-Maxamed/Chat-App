@@ -32,7 +32,7 @@ class _SendMessageState extends State<SendMessage> {
           ),
           body: Column(
             children: [
-              // Message list
+             
               Expanded(
                 child: chatprovider.isLoading
                     ? const Center(child: CircularProgressIndicator())
