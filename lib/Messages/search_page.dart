@@ -10,18 +10,23 @@ class SearchPage extends StatelessWidget {
     return Consumer<SearchProvider>(
       builder: (context, search, _) {
         return Scaffold(
-          appBar: AppBar(
-          ),
-          body: Column(children: [
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: 'Search Users',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+          appBar: AppBar(),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                TextFormField(
+                  onChanged: (value) => search.search(value),
+                  decoration: InputDecoration(
+                    hintText: 'Search Users',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],),
+          ),
         );
       },
     );
