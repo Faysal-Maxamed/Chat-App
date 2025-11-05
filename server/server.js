@@ -10,7 +10,7 @@ import messageRoutes from "./routes/MessageRoutes.js";
 
 const app= express();
 const port=4000;
-const host = "192.168.156.248";
+const host = "172.20.10.8";
 
 app.use(express.json());
 app.use(cors());
