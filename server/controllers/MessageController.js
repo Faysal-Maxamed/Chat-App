@@ -92,21 +92,5 @@ function getReceiverSocketId(userId) {
   return userSocketMap[userId];
 }
 
-// 🔍 SEARCH USERS
-export const searchUsers = async (req, res) => {
-  try {
-    const search = req.query.search || ''; // waxa user ku qoray query-ga
-    const users = await UserModel.find({
-      $or: [
-        { email: { $regex: search, $options: 'i' } },
-        { phoneNumber: { $regex: search, $options: 'i' } }
-      ]
-    }).select('-password'); // ha muujin password-ka
 
-    res.status(200).json(users);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-};
 
