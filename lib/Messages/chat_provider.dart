@@ -27,7 +27,7 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// ✅ GET Messages between current user & receiver
+  /// ✅ GET Messages between current user & receiver  
   Future<void> getMessages(String receiverId) async {
     try {
       _isLoading = true;
