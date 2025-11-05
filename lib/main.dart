@@ -1,5 +1,6 @@
 import 'package:chat_app/Messages/chat_provider.dart';
 import 'package:chat_app/Messages/chat_screen.dart';
+import 'package:chat_app/Messages/search_provider.dart';
 import 'package:chat_app/Register/register_controller.dart';
 import 'package:chat_app/login/login_controller.dart';
 import 'package:chat_app/login/login_page.dart';
@@ -18,6 +19,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LoginController()),
         ChangeNotifierProvider(create: (_) => RegisterController()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
+        
       ],
       child: MaterialApp(
       title: 'Chat App',

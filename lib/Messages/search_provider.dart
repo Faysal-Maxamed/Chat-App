@@ -11,9 +11,7 @@ class SearchProvider extends ChangeNotifier {
     try {
       var response = await http.get(
         Uri.parse('$Endpoint/users/search?search=$searchUsers'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
