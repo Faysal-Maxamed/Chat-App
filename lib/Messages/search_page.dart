@@ -11,16 +11,17 @@ class SearchPage extends StatelessWidget {
       builder: (context, search, _) {
         return Scaffold(
           appBar: AppBar(
-            title: TextFormField(
+          ),
+          body: Column(children: [
+            TextFormField(
               decoration: InputDecoration(
                 hintText: 'Search Users',
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
             ),
-          ),
-          body: Center(child: Text('Search Page Content')),
+          ],),
         );
       },
     );
