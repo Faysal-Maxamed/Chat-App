@@ -13,6 +13,7 @@ class SendMessage extends StatefulWidget {
 
 class _SendMessageState extends State<SendMessage> {
   @override
+  TextEditingController messageController = TextEditingController();
   void initState() {
     super.initState();
 
@@ -27,12 +28,11 @@ class _SendMessageState extends State<SendMessage> {
       builder: (context, chatprovider, login, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(login.user!.phoneNumber ?? '252'),
+            title: Text('Unknown User'),
             backgroundColor: Colors.blue,
           ),
           body: Column(
             children: [
-             
               Expanded(
                 child: chatprovider.isLoading
                     ? const Center(child: CircularProgressIndicator())
@@ -41,16 +41,17 @@ class _SendMessageState extends State<SendMessage> {
                         itemCount: chatprovider.messages.length,
                         itemBuilder: (context, index) {
                           final msg = chatprovider.messages[index];
+                          final isSender = msg['senderId'] == login.user!.sId;
                           return Align(
-                            alignment: msg['isMine'] == true
+                            alignment: isSender
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
                             child: Container(
                               margin: const EdgeInsets.symmetric(vertical: 4),
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: msg['isMine'] == true
-                                    ? Colors.blue[100]
+                                color: isSender
+                                    ? Colors.blue[200]
                                     : Colors.grey[300],
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -69,11 +70,15 @@ class _SendMessageState extends State<SendMessage> {
                   children: [
                     Expanded(
                       child: TextField(
+                        controller: messageController,
                         onChanged: (value) => chatprovider.getContent(value),
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
-                            onPressed: () =>
-                                chatprovider.sendMessage(widget.receiverId),
+                            onPressed: () {
+                              chatprovider.sendMessage(widget.receiverId);
+                              messageController.clear();
+                            },
+
                             icon: Icon(Icons.send, color: Colors.blue),
                           ),
                           hintText: 'Type your message.... ',
