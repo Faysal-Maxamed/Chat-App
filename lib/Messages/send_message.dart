@@ -76,7 +76,7 @@ class _SendMessageState extends State<SendMessage> {
                                 chatprovider.sendMessage(widget.receiverId),
                             icon: Icon(Icons.send, color: Colors.blue),
                           ),
-                          hintText: 'Type your message...',
+                          hintText: 'Type your message.... ',
                           border: InputBorder.none,
                         ),
                       ),
