@@ -30,6 +30,12 @@ class _SendMessageState extends State<SendMessage> {
           appBar: AppBar(
             title: Text('Unknown User'),
             backgroundColor: Colors.blue,
+            actions: [
+              IconButton(icon: Icon(Icons.call), onPressed: () {}),
+              IconButton(icon: Icon(Icons.video_call), onPressed: () {}),
+               
+
+            ],
           ),
           body: Column(
             children: [
