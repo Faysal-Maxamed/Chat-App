@@ -12,7 +12,12 @@ class SearchPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: TextFormField(
-              decoration: InputDecoration(hintText: 'Search Users'),
+              decoration: InputDecoration(
+                hintText: 'Search Users',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
             ),
           ),
           body: Center(child: Text('Search Page Content')),
