@@ -33,8 +33,6 @@ class _SendMessageState extends State<SendMessage> {
             actions: [
               IconButton(icon: Icon(Icons.call), onPressed: () {}),
               IconButton(icon: Icon(Icons.video_call), onPressed: () {}),
-               
-
             ],
           ),
           body: Column(

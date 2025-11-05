@@ -9,7 +9,7 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SearchProvider>(
-      builder: (context, search,n){
+      builder: (context, search, n) {
         return Scaffold(
           appBar: AppBar(),
           body: Padding(
@@ -34,8 +34,13 @@ class SearchPage extends StatelessWidget {
                             final users = search.searchResults[index];
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
-                              onTap: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) => SendMessage(receiverId: receiverId),
-                              )),
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SendMessage(receiverId: users['_id']),
+                                ),
+                              ),
                               leading: CircleAvatar(child: Icon(Icons.person)),
                               title: Text(
                                 users['phoneNumber'] ?? 'No Phone Number',
