@@ -1,7 +1,7 @@
 import MessageModel from "../models/MessgeSchema.js";
 
+import { io, userSocketMap } from "../server.js";
 
-import { io } from "../socket.js";  
 
 export const sendMessage = async (req, res) => {
   try {
@@ -87,7 +87,7 @@ export const getChatList = async (req, res) => {
 };
 
 // ✅ Helper function (same as in socket.js)
-import { userSocketMap } from "../socket.js";
+
 function getReceiverSocketId(userId) {
   return userSocketMap[userId];
 }

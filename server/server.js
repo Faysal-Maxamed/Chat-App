@@ -1,26 +1,49 @@
-import mongoose, { connect } from "mongoose";
 import express from "express";
-import ConnectDB from "./config/config.js";
+import http from "http";
+import { Server } from "socket.io";
 import dotenv from "dotenv";
 import cors from "cors";
+import ConnectDB from "./config/config.js";
 import userRoutes from "./routes/UserRoutes.js";
 import messageRoutes from "./routes/MessageRoutes.js";
 
+dotenv.config();
+const app = express();
+const server = http.createServer(app);
+export const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
-
-const app= express();
-const port=4000;
-const host = "172.30.48.248";
-
+const port = 4000;
+const host = "192.168.38.248";
 app.use(express.json());
 app.use(cors());
-dotenv.config();
 
-ConnectDB()
+ConnectDB();
 
-app.get("/",(req,res)=>{res.send("Hellow world")});
+app.use("/api/users", userRoutes);
+app.use("/api/messages", messageRoutes);
 
-app.use("/api/users/",userRoutes)
-app.use("/api/messages/",messageRoutes)
+export const userSocketMap = {};
 
-app.listen(port,host,()=>console.log(`server is running port on ${host}`));
+io.on("connection", (socket) => {
+  console.log("✅ A user connected:", socket.id);
+
+  const userId = socket.handshake.query.userId;
+  if (userId) userSocketMap[userId] = socket.id;
+
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+  socket.on("disconnect", () => {
+    console.log("❌ A user disconnected:", socket.id);
+    delete userSocketMap[userId];
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  });
+});
+
+server.listen(port, host, () => {
+  console.log(`🚀 Server running on http://${host}:${port}`);
+});

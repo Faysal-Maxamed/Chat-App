@@ -1,0 +1,66 @@
+import 'package:chat_app/login/login_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:get_storage/get_storage.dart';
+import '../themes/constant.dart';
+
+class SocketService {
+  static final SocketService _instance = SocketService._internal();
+  factory SocketService() => _instance;
+
+  // final login = Provider.of<LoginController>(context, listen: false);
+
+  SocketService._internal();
+
+  IO.Socket? socket;
+  final box = GetStorage();
+
+  // ✅ Connect to Socket.io server
+  void connect() {
+    final user = box.read(userId);
+    final UserID = user; // user id stored after login
+
+    socket = IO.io(
+      Endpoint, // e.g. "http://172.30.48.248:4000"
+      IO.OptionBuilder()
+          .setTransports(['websocket'])
+          .disableAutoConnect()
+          .setQuery({'userId': UserID})
+          .build(),
+    );
+
+    socket!.connect();
+
+    socket!.onConnect((_) {
+      print('✅ Socket connected: ${socket!.id}');
+    });
+
+    socket!.onDisconnect((_) {
+      print('⚠️ Socket disconnected');
+    });
+
+    socket!.onConnectError((data) {
+      print('❌ Connection error: $data');
+    });
+  }
+
+  // ✅ Emit a message
+  void sendMessage(Map<String, dynamic> message) {
+    socket?.emit('sendNewMessage', message);
+  }
+
+  // ✅ Listen for incoming messages
+  void onNewMessage(Function(Map<String, dynamic>) callback) {
+    socket?.on('newMessage', (data) {
+      print('📩 New message received: $data');
+      callback(Map<String, dynamic>.from(data));
+    });
+  }
+
+  // ✅ Disconnect socket when not needed
+  void disconnect() {
+    socket?.disconnect();
+    socket?.dispose();
+    print('🛑 Socket disconnected manually');
+  }
+}

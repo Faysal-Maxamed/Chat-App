@@ -3,8 +3,11 @@ import 'package:chat_app/themes/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:chat_app/socket/sockets_provider.dart';
 
 class ChatProvider extends ChangeNotifier {
+  final socketService = SocketService();
+  // socketService.connect();
   final box = GetStorage();
   String? receiverId;
   String? content;
@@ -17,6 +20,19 @@ class ChatProvider extends ChangeNotifier {
   List<Map<String, dynamic>> get messages => _messages;
   bool get isLoading => _isLoading;
 
+  // ✅ Marka page-ka la furo, ku xiro socket
+  void initSocket() {
+    socketService.connect();
+    socketService.onNewMessage((msg) {
+      _messages.add(msg);
+      notifyListeners();
+    });
+  }
+
+  void disposeSocket() {
+    socketService.disconnect();
+  }
+
   getReceiverId(String value) {
     receiverId = value;
     notifyListeners();
@@ -27,7 +43,7 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// ✅ GET Messages between current user & receiver  
+  /// ✅ GET Messages between current user & receiver
   Future<void> getMessages(String receiverId) async {
     try {
       _isLoading = true;
@@ -58,7 +74,7 @@ class ChatProvider extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> getChatList() async {
     try {
-      final token =box.read(Token);
+      final token = box.read(Token);
       final hasdate = box.hasData(token);
       print(hasdate);
       final response = await http.get(
@@ -83,12 +99,10 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  /// ✅ Send a new message
+  /// ✅ HTTP + Socket Send Message
   Future<void> sendMessage(ReceiverID) async {
     try {
       final token = box.read(Token);
-
-      print(Token);
       final response = await http.post(
         Uri.parse('$Endpoint/messages/send'),
         headers: {
@@ -98,15 +112,15 @@ class ChatProvider extends ChangeNotifier {
         body: jsonEncode({'receiverId': ReceiverID, 'content': content}),
       );
 
-      print(response.body);
-      print(ReceiverID);
-      print("success");
       if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        _messages.add(
-          data['data'],
-        ); // ✅ sax: backend wuxuu soo diraa data: message
+        final data = jsonDecode(response.body)['data'];
+
+        // ✅ Add locally
+        _messages.add(data);
         notifyListeners();
+
+        // ✅ Emit through socket for real-time delivery
+        socketService.sendMessage(data);
       } else {
         debugPrint('❌ Failed to send message: ${response.body}');
       }

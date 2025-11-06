@@ -14,14 +14,23 @@ class SendMessage extends StatefulWidget {
 class _SendMessageState extends State<SendMessage> {
   @override
   TextEditingController messageController = TextEditingController();
+
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final chatProvider = Provider.of<ChatProvider>(context, listen: false);
       chatProvider.getMessages(widget.receiverId!);
+      chatProvider.initSocket();
     });
   }
+late chatProvider = ChatProvider()
+@override
+void dispose() {
+  chatProvider.disconnectSocket();
+  super.dispose();
+}
+
 
   Widget build(BuildContext context) {
     return Consumer2<ChatProvider, LoginController>(
