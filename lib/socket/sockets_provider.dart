@@ -17,15 +17,18 @@ class SocketService {
 
   // ✅ Connect to Socket.io server
   void connect() {
-    final user = box.read(userId);
-    final UserID = user; // user id stored after login
+    final userID = box.read('userId'); // Hadda waa string toos ah
+    if (userID == null) {
+      print('❌ No user logged in, cannot connect socket');
+      return;
+    }
 
     socket = IO.io(
       Endpoint, // e.g. "http://172.30.48.248:4000"
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()
-          .setQuery({'userId': UserID})
+          .setQuery({'userId': userID})
           .build(),
     );
 

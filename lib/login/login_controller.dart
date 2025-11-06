@@ -65,7 +65,7 @@ class LoginController extends ChangeNotifier {
     box.write(userInfo, login.toJson());
     box.write(isLoggedIn, "isLoggedIn");
     box.write(Token, login.token);
-    box.write(userId, login.sId);
+    box.write('userId', login.sId);
     print("💾 Token saved to GetStorage: ${login.token}");
   }
 
