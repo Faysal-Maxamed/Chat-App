@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SendMessage extends StatefulWidget {
-  final String? receiverId;
+  final String receiverId;
   const SendMessage({super.key, required this.receiverId});
 
   @override
@@ -12,49 +12,55 @@ class SendMessage extends StatefulWidget {
 }
 
 class _SendMessageState extends State<SendMessage> {
-  @override
-  TextEditingController messageController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
+  late ChatProvider chatProvider; // ✅ saxid
 
+  @override
   void initState() {
     super.initState();
 
+    // WidgetsBinding ka dib marka UI dhamaado
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-      chatProvider.getMessages(widget.receiverId!);
-      chatProvider.initSocket();
+      chatProvider = Provider.of<ChatProvider>(context, listen: false);
+      chatProvider.getMessages(widget.receiverId);
+      chatProvider.initSocket(); // ✅ xiriir socket samee
     });
   }
-late chatProvider = ChatProvider()
-@override
-void dispose() {
-  chatProvider.disconnectSocket();
-  super.dispose();
-}
 
+  @override
+  void dispose() {
+    // ✅ xiriirka socket xiro marka aad baxdo page-ka
+    chatProvider.disposeSocket();
+    messageController.dispose();
+    super.dispose();
+  }
 
+  @override
   Widget build(BuildContext context) {
     return Consumer2<ChatProvider, LoginController>(
-      builder: (context, chatprovider, login, _) {
+      builder: (context, chatProvider, login, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Unknown User'),
+            title: const Text('Chat'),
             backgroundColor: Colors.blue,
             actions: [
-              IconButton(icon: Icon(Icons.call), onPressed: () {}),
-              IconButton(icon: Icon(Icons.video_call), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.call), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.video_call), onPressed: () {}),
             ],
           ),
           body: Column(
             children: [
+              // ✅ Messages list
               Expanded(
-                child: chatprovider.isLoading
+                child: chatProvider.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ListView.builder(
                         padding: const EdgeInsets.all(10),
-                        itemCount: chatprovider.messages.length,
+                        itemCount: chatProvider.messages.length,
                         itemBuilder: (context, index) {
-                          final msg = chatprovider.messages[index];
+                          final msg = chatProvider.messages[index];
                           final isSender = msg['senderId'] == login.user!.sId;
+
                           return Align(
                             alignment: isSender
                                 ? Alignment.centerRight
@@ -75,26 +81,31 @@ void dispose() {
                       ),
               ),
 
-              // Input field
+              // ✅ Message input field
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 color: Colors.grey[200],
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
                         controller: messageController,
-                        onChanged: (value) => chatprovider.getContent(value),
+                        onChanged: (value) =>
+                            chatProvider.getContent(value), // update content
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
                             onPressed: () {
-                              chatprovider.sendMessage(widget.receiverId);
-                              messageController.clear();
+                              if (messageController.text.trim().isEmpty) return;
+                              chatProvider
+                                  .sendMessage(widget.receiverId)
+                                  .then((_) {
+                                messageController.clear();
+                              });
                             },
-
-                            icon: Icon(Icons.send, color: Colors.blue),
+                            icon: const Icon(Icons.send, color: Colors.blue),
                           ),
-                          hintText: 'Type your message.... ',
+                          hintText: 'Type your message...',
                           border: InputBorder.none,
                         ),
                       ),
