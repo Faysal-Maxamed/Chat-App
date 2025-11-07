@@ -22,6 +22,7 @@ class ChatModel {
   });
 
   // ✅ Convert JSON to Model
+  
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
       id: json['_id'] ?? '',
