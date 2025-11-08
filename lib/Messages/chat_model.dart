@@ -29,8 +29,9 @@ class ChatModel {
     return ChatModel(
       id: json['_id'] ?? '',
       senderId: json['senderId'] ?? '',
-      
+
       receiverId: json['receiverId'] ?? '',
+      
       text: json['text'] ?? '',
       messageType: json['messageType'] ?? 'text',
       mediaUrl: json['mediaUrl'],
