@@ -31,8 +31,9 @@ class ChatModel {
       senderId: json['senderId'] ?? '',
 
       receiverId: json['receiverId'] ?? '',
-      
+
       text: json['text'] ?? '',
+      
       messageType: json['messageType'] ?? 'text',
       mediaUrl: json['mediaUrl'],
       token: json['token'],
