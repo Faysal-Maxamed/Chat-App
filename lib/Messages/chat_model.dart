@@ -25,10 +25,11 @@ class ChatModel {
   
   factory ChatModel.fromJson(Map<String, dynamic> json) {
 
-    
+
     return ChatModel(
       id: json['_id'] ?? '',
       senderId: json['senderId'] ?? '',
+      
       receiverId: json['receiverId'] ?? '',
       text: json['text'] ?? '',
       messageType: json['messageType'] ?? 'text',
