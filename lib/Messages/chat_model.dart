@@ -36,6 +36,7 @@ class ChatModel {
       token: json['token'],
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      
     );
   }
 
