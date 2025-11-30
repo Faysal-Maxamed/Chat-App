@@ -16,6 +16,10 @@ class ChatProvider extends ChangeNotifier {
   String? get Content => content;
   List<Map<String, dynamic>> _messages = [];
   bool _isLoading = false;
+  // Track online users (user ids)
+  Set<String> _onlineUsers = {};
+
+  Set<String> get onlineUsers => _onlineUsers;
 
   List<Map<String, dynamic>> get messages => _messages;
   bool get isLoading => _isLoading;
@@ -25,6 +29,11 @@ class ChatProvider extends ChangeNotifier {
     socketService.connect();
     socketService.onNewMessage((msg) {
       _messages.add(msg);
+      notifyListeners();
+    });
+    // Listen for online users from server and update set
+    socketService.onOnlineUsers((list) {
+      _onlineUsers = Set<String>.from(list);
       notifyListeners();
     });
   }

@@ -18,7 +18,7 @@ export const io = new Server(server, {
 });
 
 const port = 4000;
-const host = "192.168.38.248";
+const host = "192.168.8.2";
 app.use(express.json());
 app.use(cors());
 

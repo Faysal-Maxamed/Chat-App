@@ -60,6 +60,19 @@ class SocketService {
     });
   }
 
+  // ✅ Listen for online users list from server
+  void onOnlineUsers(Function(List<String>) callback) {
+    socket?.on('getOnlineUsers', (data) {
+      try {
+        final list = List<String>.from(data as List);
+        print('👥 Online users: $list');
+        callback(list);
+      } catch (e) {
+        print('⚠️ Failed to parse online users: $e');
+      }
+    });
+  }
+
   // ✅ Disconnect socket when not needed
   void disconnect() {
     socket?.disconnect();

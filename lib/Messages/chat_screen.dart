@@ -13,17 +13,26 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   @override
-  Widget build(BuildContext context) {
-    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-    
- void initState() {
+  void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+      chatProvider.initSocket();
       chatProvider.getChatList();
     });
   }
+
+  @override
+  void dispose() {
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    chatProvider.disposeSocket();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // listen true so UI updates when online status changes
+    final chatProvider = Provider.of<ChatProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(title: const Text("Chat Screen"),
       actions: [IconButton(onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>SearchPage())), icon: Icon(Icons.search))],),
@@ -60,17 +69,38 @@ class _ChatScreenState extends State<ChatScreen> {
                   }
                 }
 
+                final userId = user['_id'] ?? '';
+                final isOnline = chatProvider.onlineUsers.contains(userId);
+                final statusColor = isOnline ? Colors.green : Colors.grey;
+
                 return ListTile(
-                  leading: CircleAvatar(child: Text(email.substring(0, 2))),
+                  leading: Stack(
+                    children: [
+                      CircleAvatar(child: Text((email.length >= 2) ? email.substring(0, 2) : email)),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: statusColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   title: Text(phoneNumber),
                   subtitle: Text(lastMessage),
                   trailing: Text(formattedTime),
                   onTap: () {
-                    chatProvider.getReceiverId(user['_id'] ?? '');
+                    chatProvider.getReceiverId(userId);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => SendMessage(receiverId: user['_id'] ?? '')
+                        builder: (_) => SendMessage(receiverId: userId)
                       ),
                     );
                   },
