@@ -29,17 +29,25 @@ class ChatProvider extends ChangeNotifier {
     socketService.connect();
 
     socketService.onNewMessage((msg) {
-      // Only add message if it belongs to the current conversation
-      // msg can be from anyone, but we only want to show it if we are chatting with that person
-      // OR if we are the sender (already handled in sendMessage)
+      debugPrint('📩 Socket message received: $msg');
       final senderIdId = msg['senderId'];
-      if (senderIdId == receiverId) {
-        _messages.add(msg);
-        notifyListeners();
-      } else {
-        debugPrint(
-          '📩 Received message from $senderIdId, but current chat is with $receiverId. Ignoring for UI.',
+
+      // Only add message if it belongs to the current conversation
+      if (receiverId != null &&
+          (senderIdId == receiverId || msg['receiverId'] == receiverId)) {
+        // Prevent duplicates (e.g. if we are the sender and already added it locally)
+        final alreadyExists = _messages.any(
+          (m) =>
+              m['_id'] == msg['_id'] ||
+              (m['text'] == msg['text'] && m['createdAt'] == msg['createdAt']),
         );
+        if (!alreadyExists) {
+          _messages.insert(
+            0,
+            msg,
+          ); // Add to the TOP of the list (which will be the BOTTOM of the reversed ListView)
+          notifyListeners();
+        }
       }
     });
 
@@ -81,7 +89,10 @@ class ChatProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        _messages = List<Map<String, dynamic>>.from(data['messages']);
+        // Reverse the list so the newest message is at index 0
+        _messages = List<Map<String, dynamic>>.from(
+          data['messages'],
+        ).reversed.toList();
       } else {
         debugPrint('❌ Failed to fetch messages: ${response.body}');
       }
@@ -136,8 +147,8 @@ class ChatProvider extends ChangeNotifier {
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body)['data'];
 
-        // ✅ Add locally
-        _messages.add(data);
+        // ✅ Add locally at the start (bottom of view)
+        _messages.insert(0, data);
         notifyListeners();
 
         // ✅ Emit through socket for real-time delivery

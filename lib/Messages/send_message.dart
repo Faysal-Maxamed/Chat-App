@@ -53,8 +53,7 @@ class _SendMessageState extends State<SendMessage> {
                           ),
                         )
                       : ListView.builder(
-                          reverse:
-                              false, // Messages flow from top to bottom based on your current provider logic
+                          reverse: true,
                           padding: const EdgeInsets.all(16),
                           itemCount: chatProvider.messages.length,
                           itemBuilder: (context, index) {
