@@ -1,5 +1,3 @@
-import 'package:chat_app/login/login_controller.dart';
-import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:get_storage/get_storage.dart';
 import '../themes/constant.dart';
@@ -17,14 +15,17 @@ class SocketService {
 
   // ✅ Connect to Socket.io server
   void connect() {
-    final userID = box.read('userId'); // Hadda waa string toos ah
+    final userID = box.read('userId');
     if (userID == null) {
       print('❌ No user logged in, cannot connect socket');
       return;
     }
 
+    // Strip '/api' from Endpoint for socket connection
+    String socketUrl = Endpoint.replaceFirst('/api', '');
+
     socket = IO.io(
-      Endpoint, // e.g. "http://172.30.48.248:4000"
+      socketUrl,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()
@@ -54,6 +55,7 @@ class SocketService {
 
   // ✅ Listen for incoming messages
   void onNewMessage(Function(Map<String, dynamic>) callback) {
+    socket?.off('newMessage'); // Remove previous listeners
     socket?.on('newMessage', (data) {
       print('📩 New message received: $data');
       callback(Map<String, dynamic>.from(data));
@@ -62,6 +64,7 @@ class SocketService {
 
   // ✅ Listen for online users list from server
   void onOnlineUsers(Function(List<String>) callback) {
+    socket?.off('getOnlineUsers'); // Remove previous listeners
     socket?.on('getOnlineUsers', (data) {
       try {
         final list = List<String>.from(data as List);
@@ -80,5 +83,3 @@ class SocketService {
     print('🛑 Socket disconnected manually');
   }
 }
-
-

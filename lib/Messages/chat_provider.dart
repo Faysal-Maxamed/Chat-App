@@ -27,10 +27,22 @@ class ChatProvider extends ChangeNotifier {
   // ✅ Marka page-ka la furo, ku xiro socket
   void initSocket() {
     socketService.connect();
+
     socketService.onNewMessage((msg) {
-      _messages.add(msg);
-      notifyListeners();
+      // Only add message if it belongs to the current conversation
+      // msg can be from anyone, but we only want to show it if we are chatting with that person
+      // OR if we are the sender (already handled in sendMessage)
+      final senderIdId = msg['senderId'];
+      if (senderIdId == receiverId) {
+        _messages.add(msg);
+        notifyListeners();
+      } else {
+        debugPrint(
+          '📩 Received message from $senderIdId, but current chat is with $receiverId. Ignoring for UI.',
+        );
+      }
     });
+
     // Listen for online users from server and update set
     socketService.onOnlineUsers((list) {
       _onlineUsers = Set<String>.from(list);

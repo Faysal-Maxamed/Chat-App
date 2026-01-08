@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:chat_app/Messages/chat_screen.dart';
-import 'package:chat_app/login/login_page.dart';
 import 'package:chat_app/themes/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -29,27 +27,59 @@ class RegisterController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   register(BuildContext context) async {
+    if (phoneNumber == null || email == null || password == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all fields"),
+          backgroundColor: kErrorColor,
+        ),
+      );
+      return;
+    }
+
     try {
+      _isLoading = true;
+      notifyListeners();
+
       var data = {
         "phoneNumber": phoneNumber,
         "email": email,
         "password": password,
       };
       var response = await http.post(
-        Uri.parse(Endpoint + "users/register"),
+        Uri.parse("$Endpoint/users/register"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(data),
       );
 
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${data}");
       if (response.statusCode == 201) {
-        print("succsesfully registered please login");
-        Navigator.push(context, MaterialPageRoute(builder: (_) => LoginPage()));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Successfully registered! Please login."),
+            backgroundColor: kSuccessColor,
+          ),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Registration failed: ${response.body}"),
+            backgroundColor: kErrorColor,
+          ),
+        );
       }
     } catch (e) {
-      print("error during login: $e");
+      print("error during registration: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e"), backgroundColor: kErrorColor),
+      );
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 }

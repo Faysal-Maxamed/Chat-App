@@ -7,6 +7,7 @@ import 'package:chat_app/login/login_page.dart';
 import 'package:chat_app/themes/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -20,18 +21,25 @@ void main() async {
         ChangeNotifierProvider(create: (_) => RegisterController()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
-        
       ],
       child: MaterialApp(
-      title: 'Chat App',
-      theme: ThemeData(
-        primaryColor: Colors.blueAccent,
-        scaffoldBackgroundColor: Colors.white,
+        debugShowCheckedModeBanner: false,
+        title: 'Chat App',
+        theme: ThemeData(
+          useMaterial3: true,
+          primaryColor: kPrimaryColor,
+          scaffoldBackgroundColor: kBackgroundColor,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: kPrimaryColor,
+            primary: kPrimaryColor,
+            secondary: kSecondaryColor,
+            surface: kSurfaceColor,
+            error: kErrorColor,
+          ),
+          textTheme: GoogleFonts.poppinsTextTheme(),
+        ),
+        home: hasdate ? const ChatScreen() : const LoginPage(),
       ),
-      home:hasdate? ChatScreen(): LoginPage( ),
-    ),
     ),
   );
 }
-
-

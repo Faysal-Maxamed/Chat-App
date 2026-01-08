@@ -31,33 +31,63 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   login(BuildContext context) async {
+    if (phoneNumber == null || password == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all fields"),
+          backgroundColor: kErrorColor,
+        ),
+      );
+      return;
+    }
+
     try {
+      _isLoading = true;
+      notifyListeners();
+
       var data = {"phoneNumber": phoneNumber, "password": password};
       var response = await http.post(
-        Uri.parse(Endpoint + "/users/login"),
+        Uri.parse("$Endpoint/users/login"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(data),
       );
 
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${data}");
       if (response.statusCode == 200) {
-        print("succsesfully logged in");
         var decodedate = jsonDecode(response.body);
         var user = LoginModel.fromJson(decodedate);
 
-        print(user.token);
         saveUser(user);
-        SnackBar(content: Text("Succsess"));
-        print(user.email);
-        Navigator.push(
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Successfully logged in!"),
+            backgroundColor: kSuccessColor,
+          ),
+        );
+
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => ChatScreen()),
+          MaterialPageRoute(builder: (_) => const ChatScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Login failed: ${response.body}"),
+            backgroundColor: kErrorColor,
+          ),
         );
       }
     } catch (e) {
       print("error during login: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e"), backgroundColor: kErrorColor),
+      );
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
