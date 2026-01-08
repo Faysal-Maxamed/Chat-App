@@ -7,7 +7,12 @@ import 'package:provider/provider.dart';
 
 class SendMessage extends StatefulWidget {
   final String receiverId;
-  const SendMessage({super.key, required this.receiverId});
+  final String receiverPhone;
+  const SendMessage({
+    super.key,
+    required this.receiverId,
+    required this.receiverPhone,
+  });
 
   @override
   State<SendMessage> createState() => _SendMessageState();
@@ -108,7 +113,7 @@ class _SendMessageState extends State<SendMessage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Chatting...", // Or put the phone number/name if available in chatProvider
+                widget.receiverPhone,
                 style: GoogleFonts.poppins(
                   color: kTextColor,
                   fontSize: 16,

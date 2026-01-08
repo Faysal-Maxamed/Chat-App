@@ -261,7 +261,10 @@ class _ChatScreenState extends State<ChatScreen> {
         chatProvider.getReceiverId(userId);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => SendMessage(receiverId: userId)),
+          MaterialPageRoute(
+            builder: (_) =>
+                SendMessage(receiverId: userId, receiverPhone: phoneNumber),
+          ),
         );
       },
       child: Padding(

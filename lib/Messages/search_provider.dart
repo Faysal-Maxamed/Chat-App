@@ -6,17 +6,24 @@ import 'package:http/http.dart' as http;
 
 class SearchProvider extends ChangeNotifier {
   List _searchResults = [];
+  bool _isLoading = false;
+
   List get searchResults => _searchResults;
+  bool get isLoading => _isLoading;
+
+  SearchProvider();
 
   Future<void> search(String searchUsers) async {
     try {
+      _isLoading = true;
+      notifyListeners();
       final box = GetStorage();
       final token = box.read(Token);
       var response = await http.get(
-        Uri.parse('$Endpoint/users/search?search=$searchUsers'),
+        Uri.parse('$Endpoint/users/search?search=${searchUsers.trim()}'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': ' Bearer $token',
+          'Authorization': 'Bearer $token',
         },
       );
 
@@ -40,6 +47,9 @@ class SearchProvider extends ChangeNotifier {
       }
     } catch (e) {
       print('Error during search: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 }
